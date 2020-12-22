@@ -165,13 +165,17 @@ if __name__ == "__main__":
     if not os.path.exists('raw'):
         os.makedirs('raw')
 
-    # enter ip here
     conf = configparser.ConfigParser()
-    conf.read("conf.ini")
-    batch = conf["config"]["batch"]
+    try:
+        conf.read("conf.ini")
+        batch = conf["config"]["batch"]
+    except KeyError:
+        with open("conf.ini", "w+") as f:
+            f.writelines(["[config]\n", "batch=0\n", "count=0\n"])
+        conf.read("conf.ini")
+        batch = 0
 
     streamer = ThreadedCamera(v_url)
-    # cap = cv2.VideoCapture(v_url)
 
     image_list = []
 
